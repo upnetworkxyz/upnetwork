@@ -17,6 +17,13 @@ const url = {
     distributorTxLog: _ + '/distributor/get_tx_log',
     distributorVerification: _ + '/distributor/verification',
     distributorCdkeyList: _ + '/distributor/issue_cdkey_list',
+    withdrawQuery: _ + '/distributor/withdraw/query',
+    withdrawCreate: _ + '/distributor/withdraw/create',
+    withdrawReject: _ + '/distributor/withdraw/reject',
+    withdrawClaim: _ + '/distributor/withdraw/claim',
+    distributorSaleMonth: _ + '/distributor/sale_month',
+    mintLoginNFTSignature: _ + '/sbt/signature',
+    getConfig: _ + '/config',
 }
 export {
     url,

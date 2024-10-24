@@ -1,0 +1,16 @@
+.ModalGetMoveFromFaucet{
+    padding: 44px 40px 26px;
+}
+
+.ModalGetMoveFromFaucet_btn{
+    width: 60px;
+    height: 24px;
+    border: 1px solid rgba(255,255,255,1);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+}   
+
+.ModalGetMoveFromFaucet_tipImg{
+    border-radius: 8px;
+}

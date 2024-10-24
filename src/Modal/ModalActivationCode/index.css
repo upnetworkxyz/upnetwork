@@ -1,20 +1,37 @@
 .ModalActivationCode{
     position: relative;
     width: 100%;
-    padding: 0px 0px 42px 0px;
+    padding: 0px 0px 20px 0px;
+}
+
+.activationCodeListRoot_v{
+    width: calc(100% - 32px);
+    display: flex;
+    align-items: start;
+    justify-content: start;
+    flex-direction: column;
+    overflow-y: hidden;
+    overflow-x: auto;
+    margin-top: 16px;
 }
 
 .activationCodeLine{
+    width: 100%;
+    margin-top: 16px;
     padding: 0px 16px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    div{
-        font-family: var(--font-common);
-    }
 }
 
-.activationCodeLine .codeIdPart{
+.activationCodeLine_v{
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.ModalActivationCode .codeIdPart{
     margin-left: 17px;
     width: 97px;
     text-align: left;
@@ -24,7 +41,7 @@
     justify-content: flex-start;
 }
 
-.activationCodeLine .codePart{
+.ModalActivationCode .codePart{
     width: 200px;
     text-align: left;
     font-size: 12px;
@@ -33,7 +50,7 @@
     justify-content: flex-start;
 }
 
-.activationCodeLine .statusPart{
+.ModalActivationCode .statusPart{
     margin-left: 5px;
     width: 88px;
     text-align: center;
@@ -43,7 +60,7 @@
     justify-content: center;
 }
 
-.activationCodeLine .datePart{
+.ModalActivationCode .datePart{
     margin-left: 15px;
     width: 140px;
     text-align: center;
@@ -62,49 +79,17 @@
     padding: 0px 16px;
 }
 
+.activationCodeList_v{
+    margin-top: 6px;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .activationCodeListLine{
     width: 100%;
     min-height: 32px;
     border-top: 1px solid rgba(51,51,51,1);
-}
-
-.activationCodeListLine .codeIdPart{
-    margin-left: 17px;
-    width: 97px;
-    text-align: left;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.activationCodeListLine .codePart{
-    width: 200px;
-    text-align: left;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.activationCodeListLine .statusPart{
-    margin-left: 5px;
-    width: 88px;
-    text-align: center;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.activationCodeListLine .datePart{
-    margin-left: 15px;
-    width: 140px;
-    text-align: center;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .activationCodeActiveState{

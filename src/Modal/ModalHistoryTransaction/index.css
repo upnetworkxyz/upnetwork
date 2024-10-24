@@ -1,42 +1,59 @@
+.historyTransactionListRoot_v{
+    width: calc(100% - 32px);
+    display: flex;
+    align-items: start;
+    justify-content: start;
+    flex-direction: column;
+    overflow-y: hidden;
+    overflow-x: auto;
+    margin-top: 16px;
+}
+
 .transactionListoryLine{
+    width: 100%;
+    margin-top: 16px;
     padding: 0px 16px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    div{
-        font-family: var(--font-common);
-    }
 }
 
-.transactionListoryLine .chainPart{
+.transactionListoryLine_v{
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.ModalDistribute .chainPart{
     margin-left: 17px;
     width: 80px;
     text-align: left;
     font-size: 12px;
 }
 
-.transactionListoryLine .walletPart{
+.ModalDistribute .walletPart{
     margin-left: 5px;
     width: 110px;
     text-align: left;
     font-size: 12px;
 }
 
-.transactionListoryLine .amountPart{
+.ModalDistribute .amountPart{
     margin-left: 5px;
     width: 115px;
     text-align: center;
     font-size: 12px;
 }
 
-.transactionListoryLine .datePart{
+.ModalDistribute .datePart{
     margin-left: 5px;
     width: 120px;
     text-align: center;
     font-size: 12px;
 }
 
-.transactionListoryLine .txnPart{
+.ModalDistribute .txnPart{
     margin-left: 5px;
     width: 115px;
     text-align: center;
@@ -52,35 +69,17 @@
     padding: 0px 16px;
 }
 
+.historyTransactionList_v{
+    margin-top: 6px;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .historyTransactionListLine{
     width: 100%;
     min-height: 32px;
     border-top: 1px solid rgba(51,51,51,1);
-}
-
-.historyTransactionListLine .chainPart{
-    margin-left: 17px;
-    width: 80px;
-}
-
-.historyTransactionListLine .walletPart{
-    margin-left: 5px;
-    width: 110px;
-}
-
-.historyTransactionListLine .amountPart{
-    margin-left: 5px;
-    width: 115px;
-}
-
-.historyTransactionListLine .datePart{
-    margin-left: 5px;
-    width: 120px;
-}
-
-.historyTransactionListLine .txnPart{
-    margin-left: 10px;
-    width: 115px;
 }
 
 .amountPartIconRoot{

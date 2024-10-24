@@ -17,6 +17,7 @@ import "./index.css"
 import moment from "moment";
 
 const ModalHistoryTransaction = ({
+    useVerticalMode,
     closeFn = () => {},
 }) => {
     const [nextPage, setNextPage] = useState(1);
@@ -63,93 +64,95 @@ const ModalHistoryTransaction = ({
             <div className="w100p fs20 fb tlc" style={{marginTop: '39px'}}>
                 {`Transaction History`}
             </div>
-            <div className="w100p transactionListoryLine" style={{marginTop: '16px'}}>
-                <div className="chainPart color-999">
-                    {`Chain`}
+            <div className={`${useVerticalMode?'historyTransactionListRoot_v':'flex_center_start_col'}`}> 
+                <div className={`${useVerticalMode?`transactionListoryLine_v`:`transactionListoryLine`}`}>
+                    <div className="chainPart color-999">
+                        {`Chain`}
+                    </div>
+                    <div className="walletPart color-999">
+                        {`Wallet Address`}
+                    </div>
+                    <div className="amountPart color-999">
+                        {`Amount`}
+                    </div>
+                    <div className="datePart color-999">
+                        {`Date`}
+                    </div>
+                    <div className="txnPart color-999">
+                        {`TXN`}
+                    </div>
                 </div>
-                <div className="walletPart color-999">
-                    {`Wallet Address`}
-                </div>
-                <div className="amountPart color-999">
-                    {`Amount`}
-                </div>
-                <div className="datePart color-999">
-                    {`Date`}
-                </div>
-                <div className="txnPart color-999">
-                    {`TXN`}
-                </div>
-            </div>
-            <div className="historyTransactionList flex_center_start_col" id="historyTransactionList">
-                {
-                    txLogList?.length > 0 &&
-                        <InfiniteScroll
-                            dataLength={txLogList?.length || 0}
-                            next={getMoreList}
-                            hasMore={nextPage !== -1}
-                            loader={<div
+                <div className={`${useVerticalMode?`historyTransactionList_v`:`historyTransactionList`} flex_center_start_col`} id="historyTransactionList">
+                    {
+                        txLogList?.length > 0 &&
+                            <InfiniteScroll
+                                dataLength={txLogList?.length || 0}
+                                next={getMoreList}
+                                hasMore={nextPage !== -1}
+                                loader={<div
+                                    style={{
+                                        textAlign: "center",
+                                        width: "100%",
+                                    }}
+                                ><Spin /></div>}
                                 style={{
-                                    textAlign: "center",
-                                    width: "100%",
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    justifyContent: `flex-start`,
+                                    width: '100%',
+                                    overflow: 'hidden'
                                 }}
-                            ><Spin /></div>}
-                            style={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                justifyContent: `flex-start`,
-                                width: '100%',
-                                overflow: 'hidden'
-                            }}
-                            scrollableTarget={'historyTransactionList'}
-                        >
-                            {
-                                txLogList.map((item, index) => {
-                                    const {
-                                        chain,
-                                        timestamp,
-                                        from,
-                                        amount,
-                                        txHash,
-                                    } = item || {};
-                                    return (
-                                        <div key={index} className="historyTransactionListLine flex_center_start">
-                                            <div className="chainPart fs12">
-                                                {`${chain==='tron'?'TRC20-USDT':'ERC20-USDT'}`}
-                                            </div>
-                                            <div className="walletPart flex_center_start">
-                                                <CustomIcon imgName={`UI_Picture_Icon_Copy_01`} className="op4" width={16} height={16} onClick={() => {
-                                                    copyFn(from);
-                                                }}></CustomIcon>
-                                                <div className="fs12 color-999" style={{marginLeft: '6px'}}>
-                                                    {convertAddress(from)}
+                                scrollableTarget={'historyTransactionList'}
+                            >
+                                {
+                                    txLogList.map((item, index) => {
+                                        const {
+                                            chain,
+                                            timestamp,
+                                            from,
+                                            amount,
+                                            txHash,
+                                        } = item || {};
+                                        return (
+                                            <div key={index} className="historyTransactionListLine flex_center_start">
+                                                <div className="chainPart fs12">
+                                                    {`${chain==='tron'?'TRC20-USDT':'ERC20-USDT'}`}
+                                                </div>
+                                                <div className="walletPart flex_center_start">
+                                                    <CustomIcon imgName={`UI_Picture_Icon_Copy_01`} className="op4" width={16} height={16} onClick={() => {
+                                                        copyFn(from);
+                                                    }}></CustomIcon>
+                                                    <div className="fs12 color-999" style={{marginLeft: '6px'}}>
+                                                        {convertAddress(from)}
+                                                    </div>
+                                                </div>
+                                                <div className="amountPart flex_center_start">
+                                                    <div className="amountPartIconRoot">
+                                                        <CustomIcon imgName={`${chain==='tron'?'UI_Picture_TRON_01':'UI_Picture_Ethereum_01'}`} className="amountPartIcon1" width={18} height={18}></CustomIcon>
+                                                        <CustomIcon imgName={`UI_Picture_USDT_01`} className="amountPartIcon2" width={18} height={18}></CustomIcon>
+                                                    </div>
+                                                    <div className="fs12">
+                                                        {`${convertBalance(amount || 0)} USDT`}
+                                                    </div>
+                                                </div>
+                                                <div className="datePart flex_center_center fs12 color-999">
+                                                    {`${formatUtcTime(timestamp)} UTC`}
+                                                </div>
+                                                <div className="txnPart flex_center_start">
+                                                    <CustomIcon imgName={`UI_Picture_Icon_Copy_01`} className="op4" width={16} height={16} onClick={() => {
+                                                        copyFn(txHash);
+                                                    }}></CustomIcon>
+                                                    <div className="fs12 color-999" style={{marginLeft: '6px'}}>
+                                                        {convertAddress(txHash)}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="amountPart flex_center_start">
-                                                <div className="amountPartIconRoot">
-                                                    <CustomIcon imgName={`${chain==='tron'?'UI_Picture_TRON_01':'UI_Picture_Ethereum_01'}`} className="amountPartIcon1" width={18} height={18}></CustomIcon>
-                                                    <CustomIcon imgName={`UI_Picture_USDT_01`} className="amountPartIcon2" width={18} height={18}></CustomIcon>
-                                                </div>
-                                                <div className="fs12">
-                                                    {`${convertBalance(amount || 0)} USDT`}
-                                                </div>
-                                            </div>
-                                            <div className="datePart flex_center_center fs12 color-999">
-                                                {`${formatUtcTime(timestamp*1000)} UTC`}
-                                            </div>
-                                            <div className="txnPart flex_center_start">
-                                                <CustomIcon imgName={`UI_Picture_Icon_Copy_01`} className="op4" width={16} height={16} onClick={() => {
-                                                    copyFn(txHash);
-                                                }}></CustomIcon>
-                                                <div className="fs12 color-999" style={{marginLeft: '6px'}}>
-                                                    {convertAddress(txHash)}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </InfiniteScroll>
-                }
+                                        )
+                                    })
+                                }
+                            </InfiniteScroll>
+                    }
+                </div>
             </div>
         </div>
     )

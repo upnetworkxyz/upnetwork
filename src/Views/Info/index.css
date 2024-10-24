@@ -87,6 +87,11 @@
     padding: 16px 15px 16px;
 }
 
+.blockItem{
+    min-height: 60px;
+    max-height: 60px;
+}
+
 .drawerWrap .block:not(.infoHead):hover {
     background-color: #3D3D3D;
 }

@@ -6,7 +6,7 @@ export const movementTestnet = /*#__PURE__*/ defineChain({
   nativeCurrency: { name: 'MOVE', symbol: 'MOVE', decimals: 18 },
   rpcUrls: {
     default: {
-      http: ['https://mevm.devnet.imola.movementlabs.xyz'],
+      http: ['https://upnetwork-mevm.devnet.imola.movementlabs.xyz'],
     },
   },
   blockExplorers: {

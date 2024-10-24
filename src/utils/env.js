@@ -30,7 +30,8 @@ const BaseRPC = 'https://base-mainnet.g.alchemy.com/v2/FpgNDRRVbjnZJKt843pgkW7oR
 const BaseSepoliaRPC = 'https://base-sepolia.g.alchemy.com/v2/KzB63kDbXsYOO41kz7VuPQuCOg8B1ZbA';
 const EthSepoliaRPC = 'https://eth-sepolia.g.alchemy.com/v2/HAICwTrChZ91SetJM4C1_8LXbg6uL_Ao';
 //const AbstractRPC = 'https://api.testnet.abs.xyz';
-const MoveTestnetRPC = 'https://mevm.devnet.m1.movementlabs.xyz';
+//const MoveTestnetRPC = 'https://mevm.devnet.m1.movementlabs.xyz';
+const MoveTestnetRPC = 'https://upnetwork-mevm.devnet.imola.movementlabs.xyz';
 
 const envConfig = envObj[currentEnv];
 

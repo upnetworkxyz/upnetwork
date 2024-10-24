@@ -23,8 +23,11 @@
                 <li class="mr-40"><a href="#nbm">NBM</a></li>
                 <li class="mr-40"><a href="#parallax-section">Pre-Order<!-- <span class="link-badge" style="--lqd-badge-color: #747474;">Pre-order</span> --></a></li>
                 <li class="mr-40"><a href="#main-features">Features</a></li>
-                <li class="mr-40"><a href="#backers">Backers</a></li>
-                <li class="mr-10"><a href="#news">News</a></li>
+                <!-- <li class="mr-40"><a href="#backers">Backers</a></li> -->
+                <li class="mr-40"><a href="#news">News</a></li>
+                <li class="mr-40"><a href="https://docs.upnetwork.xyz">Docs</a></li>
+                <li class="mr-10"><a href="https://points.upnetwork.xyz">Points</a></li>
+                
             </ul>
             <!-- <div class="lqd-custom-menu-btn-wrap ml-40">
                 <a href="#modal-subscribe" class="btn btn-solid btn-xs btn-icon-shaped text-14 rounded-6 py-5 px-10 text-black bg-primary" data-lity="modal-subscribe"><span data-text="Login" class="btn-txt">Login</span></a>
@@ -98,8 +101,10 @@
                 <li><a class="text-white" href="#nbm">NBM</a></li>
                 <li><a class="text-white" href="#parallax-section">Pre-Order<!-- <span class="link-badge" style="--lqd-badge-color: #747474;">Pre-order</span> --></a></li>
                 <li><a class="text-white" href="#main-features">Features</a></li>
-                <li><a class="text-white" href="#backers">Backers</a></li>
+                <!-- <li><a class="text-white" href="#backers">Backers</a></li> -->
                 <li><a class="text-white" href="#news">News</a></li>
+                <li><a class="text-white" href="https://docs.upnetwork.xyz">Docs</a></li>
+                <li><a class="text-white" href="https://points.upnetwork.xyz">Points</a></li>
             </ul>
         </div>
     </div>
@@ -193,17 +198,17 @@
                                 
                                 <div class="w-full relative flex flex-col">
                                     <div class="w-60percent mx-auto text-center lg:w-80percent sm:w-full">
-                                        <div class="countdown h3 my-0 text-center text-white mb-50" id="lqd-countdown-gallery" data-plugin-countdown="true" data-countdown-options='{ "until" : "2024-09-22 13:00", "daysLabel" : "Day", "hoursLabel" : "Hou", "minutesLabel" : "Min", "secondsLabel" : "Sec" }'></div>
+                                        <div class="countdown h3 my-0 text-center text-white mb-50" id="lqd-countdown-gallery" data-plugin-countdown="true" data-countdown-options='{ "until" : "1727010000000", "daysLabel" : "Day", "hoursLabel" : "Hou", "minutesLabel" : "Min", "secondsLabel" : "Sec" }'></div>
                                         <p class="ld-fh-element relative mb-3/25em text-19 leading-1/2em">
                                             Time: 13:00 on September 22, 2024 (UTC)<br>
-                                            First Batch: 15,000 Units<br>
+                                            Total Stock: 15,000 Units<br>
                                         </p>
                                     </div>
                                 </div>
                                 <div class="w-full relative flex flex-col animation-element">
-                                    <div class="w-30percent mx-auto text-center lg:w-80percent sm:w-full z-100">
-                                        <a href="https://support.upnetwork.xyz/hc/en-gb/articles/15461716922268-Pre-Order-Countdown-for-the-Up-Mobile-A24-Movers-Edition" target="_blank" class="button btn btn-solid btn-md btn-has-label btn-icon-right btn-hover-swp w-full border-3 border-white rounded-100 text-17 leading-2em tracking-1 text-white font-bold hover:bg-primary hover:text-black">
-                                        <span class="btn-txt" data-text="Join the event">$999 USD / Learn more</span>
+                                    <div class="w-35percent mx-auto text-center lg:w-80percent sm:w-full z-100">
+                                        <a href="https://pre-order.upnetwork.xyz/" target="_blank" class="button btn btn-solid btn-md btn-has-label btn-icon-right btn-hover-swp w-full border-3 border-white rounded-100 text-17 leading-2em tracking-1 text-white font-bold hover:bg-primary hover:text-black">
+                                        <span class="btn-txt" data-text="Join the event">Pre-Order Now</span>
                                         <span class="btn-icon">
                                             <i aria-hidden="true" class="lqd-icn-ess icon-md-arrow-forward text-1em"></i>
                                         </span>
@@ -317,7 +322,7 @@
                             data-parallax-from='{"opacity" : 0.2}'
                             data-parallax-to='{"opacity" : 1, "stagger": {"from": "start", "each" : 1}}'
                         >
-                            Through our strategic partnership with Movement Labs, we are establishing the world’s largest smart mobile node network and launching the ‘Next Billion Movement’ initiative to grow the Web3 mobile ecosystem.
+                            Up Network is building the world’s largest smart mobile node network and first Decentralized Mobile Infrastructure Network (DeMIN) on Movement, integrating mobile devices with blockchain via our Web3 abstraction layer.
                         </h3>
                     </div>
                 </div>
@@ -426,8 +431,10 @@
         data-parallax-from='{"y": "0px", "scaleX" : 1, "scaleY" : 1}'
         data-parallax-to='{"y": "-300px", "scaleX" : 0.6, "scaleY" : 0.6}'
     >   
-        <div class="module-video-3 w-full h-full absolute top-0 left-0 overflow-hidden z-0 transotion-opacity pointer-events-none bg-before">
-            <video class="background-video-hosted max-w-full w-full h-full absolute-center object-cover opacity-20" src="assets/videos/dark-ai/banner/bg-video-09-540p.mp4" autoplay muted playsinline loop></video>
+        <div class="module-video-3 w-full h-full absolute top-0 left-0 overflow-hidden z-0 transotion-opacity pointer-events-none bg-before"
+            style="background-image: url('assets/images/bg/bg-video-09.png');background-size:cover;background-position:center;"
+        >
+           <!--  <video class="background-video-hosted max-w-full w-full h-full absolute-center object-cover opacity-20" src="assets/videos/dark-ai/banner/bg-video-09-540p.mp4" autoplay muted playsinline loop></video> -->
         </div>
         <div
             class="container flex flex-col"
@@ -464,7 +471,7 @@
                     </a>
                 </div>
                 <div class="max-w-full banner-btn-right animation-element">
-                    <a href="https://www.youtube.com/watch?v=Fnk0kFlneQU" class="fresco btn btn-solid btn-md btn-icon-left btn-hover-swp text-17 font-medium bg-primary text-black rounded-6 rounded-left-0">
+                    <a href="https://youtu.be/07AMKrBwLE4" class="fresco btn btn-solid btn-md btn-icon-left btn-hover-swp text-17 font-medium bg-primary text-black rounded-6 rounded-left-0">
                         <span data-text="Watch Video" class="btn-txt">Watch Video </span><span class="btn-icon"><i aria-hidden="true" class="lqd-icn-ess icon-ion-ios-play"></i> </span>
                         <span class="btn-icon"><i aria-hidden="true" class="lqd-icn-ess icon-ion-ios-play"></i></span>
                     </a>
@@ -1417,7 +1424,7 @@
                                     <div class="lqd-lp-meta uppercase font-bold relative z-3">
                                         <span class="screen-reader-text">Tags </span>
                                         <ul class="lqd-lp-cat lqd-lp-cat-shaped lqd-lp-cat-solid reset-ul inline-ul font-bold uppercase tracking-0/1em">
-                                            <li><a class="rounded-full" href="#" rel="category">Event</a></li>
+                                            <li><a class="rounded-full" href="#" rel="category">News</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -1430,15 +1437,15 @@
                                                 </h3>
                                             </div>
                                         </div>
-                                        <time class="lqd-lp-date" datetime="2021-06-02T13:40:12+00:00">Aug 13, 2024</time>
+                                        <time class="lqd-lp-date" datetime="2021-09-06T13:40:12+00:00">September 6th, 2024</time>
                                     </div>
-                                    <a href="https://x.com/upnetworkhq/status/1823253422528716816?s=46&t=2C3ZlXNOybDCo9XROu8MZQ" target="_blank">
-                                        <h2 class="entry-title lqd-lp-title mt-0/5em mb-0 h5 text-black font-bold">Up Network and Movement co-hosting the Afterparty</h2>
+                                    <a href="https://x.com/upnetworkhq/status/1832001871898423660?s=46" target="_blank">
+                                        <h2 class="entry-title lqd-lp-title mt-0/5em mb-0 h5 text-black font-bold">Up Network Shines at KBW 2024</h2>
                                     </a>
                                 </header>
                                 <div class="lqd-lp-excerpt pt-1em pb-1/5em px-1em">
-                                    <p class="text-14 text-black-40">On August 12, 2024, the Up Network team attended the Foresight 2024 conference in Hong Kong and, at 6:30 PM (GMT+8), co-hosted our celebration dinner with members of the Movement Labs ecosystem...</p>
-                                    <a href="https://x.com/upnetworkhq/status/1823253422528716816?s=46&t=2C3ZlXNOybDCo9XROu8MZQ" target="_blank" class="text-black font-bold">Read More</a>
+                                    <p class="text-14 text-black-40">Up Network made a strong impact at Korea Blockchain Week 2024, showcasing the future of decentralized mobile infrastructure and connecting with key industry leaders. Stay tuned for more groundbreaking developments from the Up Network team!</p>
+                                    <a href="https://x.com/upnetworkhq/status/1832001871898423660?s=46" target="_blank" class="text-black font-bold">Read More</a>
                                 </div>
                             </article>
                         </div>
@@ -1549,7 +1556,7 @@
                                     <div class="lqd-lp-meta uppercase font-bold relative z-3">
                                         <span class="screen-reader-text">Tags </span>
                                         <ul class="lqd-lp-cat lqd-lp-cat-shaped lqd-lp-cat-solid reset-ul inline-ul font-bold uppercase tracking-0/1em">
-                                            <li><span class="rounded-full" rel="category">Announcement</span></li>
+                                            <li><span class="rounded-full" rel="category">NBM</span></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -1562,15 +1569,15 @@
                                                 </h3>
                                             </div>
                                         </div>
-                                        <time class="lqd-lp-date" datetime="">Aug 18, 2024</time>
+                                        <time class="lqd-lp-date" datetime="">September 10th, 2024</time>
                                     </div>
                                     <div>
-                                        <h2 class="entry-title lqd-lp-title mt-0/5em mb-0 h5 text-black font-bold">Website Upgrade to Enhance User Experience and Transparency</h2>
+                                        <h2 class="entry-title lqd-lp-title mt-0/5em mb-0 h5 text-black font-bold">The Next Billion Movement</h2>
                                     </div>
                                 </header>
                                 <div class="lqd-lp-excerpt pt-1em pb-1/5em px-1em">
-                                    <p class="text-14 text-black-40">We are pleased to announce that our official website will go live within the next 48 hours.This update represents not only a technical advancement but also our unwavering dedication to continuous improvement and enhancing the user experience.</p>
-                                    <a href="https://support.upnetwork.xyz/hc/en-gb/articles/15456038759196-Website-Upgrade-to-Enhance-User-Experience-and-Transparency" target="_blank" class="text-black font-bold">Read More</a>
+                                    <p class="text-14 text-black-40">The Next Billion Movement is more than just a technological advancement; it represents a shift towards a more equitable digital future. We are spearheading this movement by dedicating 51% of Up Networks’ total supply towards user incentives to grow the Web3 mobile ecosystem.</p>
+                                    <a href="https://support.upnetwork.xyz/hc/en-gb/articles/15819373663900-The-Next-Billion-Movement" target="_blank" class="text-black font-bold">Read More</a>
                                 </div>
                             </article>
                         </div>
@@ -1583,7 +1590,7 @@
                                     <div class="lqd-lp-meta uppercase font-bold relative z-3">
                                         <span class="screen-reader-text">Tags </span>
                                         <ul class="lqd-lp-cat lqd-lp-cat-shaped lqd-lp-cat-solid reset-ul inline-ul font-bold uppercase tracking-0/1em">
-                                            <li><span class="rounded-full" rel="category">Award</span></li>
+                                            <li><span class="rounded-full" rel="category">Pre-Order</span></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -1592,19 +1599,19 @@
                                         <div class="lqd-lp-author relative z-3">
                                             <div class="lqd-lp-author-info">
                                                 <h3 class="mt-0 mb-0">
-                                                    <span>Up Announcement</span>
+                                                    <span>Up Network</span>
                                                 </h3>
                                             </div>
                                         </div>
-                                        <time class="lqd-lp-date" datetime="">Aug 20, 2024</time>
+                                        <time class="lqd-lp-date" datetime="">August 20th, 2024</time>
                                     </div>
                                     <div>
-                                        <h2 class="entry-title lqd-lp-title mt-0/5em mb-0 h5 text-black font-bold">Pre-Order Countdown for the Up Mobile A24 - Movers Edition</h2>
+                                        <h2 class="entry-title lqd-lp-title mt-0/5em mb-0 h5 text-black font-bold">Pre-Order Countdown for the Up Mobile Mover Edition</h2>
                                     </div>
                                 </header>
                                 <div class="lqd-lp-excerpt pt-1em pb-1/5em px-1em">
-                                    <p class="text-14 text-black-40">The Up Mobile A24 (Mover Edition) phone launched by Up Network will officially begin pre-sales on September 22, 2024, at 13:00 (UTC). The countdown to the 'official pre-sale' starts now!"</p>
-                                    <a href="https://support.upnetwork.xyz/hc/en-gb/articles/15461716922268-Pre-Order-Countdown-for-the-Up-Mobile-A24-Movers-Edition" target="_blank" class="text-black font-bold">Read More</a>
+                                    <p class="text-14 text-black-40">This announcement marks the beginning of the countdown to the pre-order event for the Up Mobile Mover Edition, which will commence on September 22, 2024, at 13:00 (UTC).</p>
+                                    <a href="https://support.upnetwork.xyz/hc/en-gb/articles/15461716922268-Pre-Order-Countdown-for-the-Up-Mobile-Mover-Edition" target="_blank" class="text-black font-bold">Read More</a>
                                 </div>
                             </article>
                         </div>
@@ -1738,14 +1745,16 @@
                 <li class="mb-15"><a href="mailto:partner@upnetwork.xyz">partner@upnetwork.xyz</a></li>
                 <li class="mb-15"><a href="mailto:sales@upnetwork.xyz">sales@upnetwork.xyz<!-- <span class="link-badge" style="--lqd-badge-color: #747474;">Soon</span> --></a></li>
                 <li class="mb-15"><a href="mailto:support@upnetwork.xyz">support@upnetwork.xyz</a></li>
+                <li class="mb-15"><a href="mailto:resellers@upnetwork.xyz">resellers@upnetwork.xyz</a></li>
+                <li class="mb-15"><a href="https://support.upnetwork.xyz/hc/en-gb/articles/15368865103900-Official-Distributors-of-Up-Mobile">Official Distributor List</a></li>
             </ul>
         </div>
-        <div class="ld-fancy-heading relative"><h6 class="ld-fh-element relative mb-0/5em text-15 font-ultrabold">Support</h6></div>
+        <!-- <div class="ld-fancy-heading relative"><h6 class="ld-fh-element relative mb-0/5em text-15 font-ultrabold">Support</h6></div>
         <div class="lqd-fancy-menu lqd-custom-menu relative lqd-menu-td-none">
             <ul class="reset-ul link-white-50 text-15">
                 <li class="mb-15"><a href="${window.location.origin}/#/officialverification" target="_self">Verification Search</a></li>
             </ul>
-        </div>
+        </div> -->
     </div>
     <div class="w-20percent flex flex-col gap-25 p-10 transition-bg lg:w-25percent sm:w-50percent">
         <div id="ld-fancy-heading-6447b46bcde9f" class="ld-fancy-heading relative"><h6 class="ld-fh-element relative mb-0/5em text-15 font-ultrabold">Legal</h6></div>
@@ -1761,12 +1770,12 @@
         <div id="ld-fancy-heading-6447b46bd5918" class="ld-fancy-heading relative"><h6 class="ld-fh-element relative mb-0/5em text-15 font-ultrabold">Learn More</h6></div>
         <div class="lqd-fancy-menu lqd-custom-menu relative lqd-menu-td-none">
             <ul class="reset-ul link-white-50 text-15">
-                <li class="mb-15"><a href="https://www.notion.so/upnetwork/UP-NETWORK-INTRO-0b30d27b07e14a2ea73d903920802170">About Up Network</a></li>
-                <li class="mb-15"><a href="#">UP OS</a></li>
-                <li class="mb-15"><a href="#">DeMIN</a></li>
-                <li class="mb-15"><a href="#">Proof of Personal-hood</a></li>
-                <li class="mb-15"><a href="#">Developers</a></li>
-                <li class="mb-15"><a href="#">OEM Partners</a></li>
+                <li class="mb-15"><a href="https://docs.upnetwork.xyz/up-network/up-network">Up Network</a></li>
+                <li class="mb-15"><a href="https://docs.upnetwork.xyz/up-network/up-network/upos">UpOS</a></li>
+                <li class="mb-15"><a href="https://docs.upnetwork.xyz/up-network/up-network/demin">DeMIN</a></li>
+                <li class="mb-15"><a href="https://docs.upnetwork.xyz/up-network/up-network/web3-abstraction-layer">Web3 Abstraction Layer</a></li>
+                <li class="mb-15"><a href="https://docs.upnetwork.xyz/up-network/up-network/technical-details">Technical Details</a></li>
+                <li class="mb-15"><a href="https://docs.upnetwork.xyz/up-network/up-network/ecosystem">Ecosystem</a></li>
             </ul>
         </div>
     </div>

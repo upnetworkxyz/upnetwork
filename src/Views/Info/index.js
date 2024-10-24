@@ -26,10 +26,15 @@ import {
     invitecodeList,
     invitecodeBind
 } from '../../utils/upNet';
+import {
+    getLoginNFT,
+} from '../../utils/upNetWeb3';
 import { envConfig } from '../../utils/env';
 import { useLocation } from 'react-router-dom';
 import ModalBecomeLeader from '../../Modal/ModalBecomeLeader';
 import ModalDistribute from '../../Modal/ModalDistribute';
+import ModalMintLoginNFT from '../../Modal/ModalMintLoginNFT';
+import ModalGetMoveFromFaucet from '../../Modal/ModalGetMoveFromFaucet';
 const useDebounce = (callback, delay) => {
     const timeoutRef = useRef(null);
 
@@ -46,6 +51,7 @@ const useDebounce = (callback, delay) => {
 // const hrefInviteCode = getUrlParams(`invite`);
 
 const Info = ({
+    useVerticalMode,
     setShowOfficialVerification = () => {}
 }) => {
     const [hrefInviteCode,setHrefInviteCode] = useState(null)
@@ -102,6 +108,8 @@ const Info = ({
     const [showBindPanel, setShowBindPanel] = useState(false)
     const [showBecomeLeader, setShowBecomeLeader] = useState(false);
     const [showDistribute, setShowDistribute] = useState(false);
+    const [showMintLoginNFT, setShowMintLoginNFT] = useState(false);
+    const [showGetMoveFromFaucet, setShowGetMoveFromFaucet] = useState(false);
 
     const [accName, setAccName] = useState('')
     const [checkingAccname, setCheckingAccname] = useState(false)
@@ -136,12 +144,22 @@ const Info = ({
     const tokenBalanceRef = useRef({});
     const [exchangeUsdList, setExchangeUsdList] = useState(null);
 
+    const [loginNFT, setLoginNFT] = useState(null);
+    const [loadLoginNFT, setLoadLoginNFT] = useState(false);
+
     const [openAccountNft, setOpenAccountNft] = useState(false);
+    const [openLoginNft, setOpenLoginNft] = useState(false);
+
+    const [ftUpdateIconRotate, setFtUpdateIconRotate] = useState(false);
+    const [ftUpdateLock, setFtUpdateLock] = useState(false);
+
+    const [firstUpdateBalance, setFirstUpdateBalance] = useState(false);
 
     const transactionLockRef = useRef(false);
 
     const nftWebpUrl_high = 'https://v-sg.turnup.so/502dc1be5f9d71ef895987c7371d0102/image/dynamic/67cd1a56783949a5bb11473050473678.webp';
     const nftWebpUrl_low = '/img/upmobile-preorder-nft-half.webp';
+    const loginNftWebpUrl_low = '/img/UPIDNFT_540_15.webp';
 
     const { 
         userName, 
@@ -174,6 +192,17 @@ const Info = ({
         }
         return res;
     }, [selectedChainTokenId]);
+
+    const movementChainTokenInfo = useMemo(() => {
+        let chaintokenId = 3073200;
+        let res = {
+            ...getCurrentChainTokenInfoById(chaintokenId),
+            chainInfo: {
+                ...getCurrentChainInfoByTokenId(chaintokenId),
+            }
+        }
+        return res;
+    }, []);
 
     const currentChainInfo = useMemo(() => {
         return getCurrentChainInfoByTokenId(selectedChainTokenId);
@@ -501,15 +530,15 @@ const Info = ({
     }
 
     useEffect(() => {
-        let tempWeb3TokenBalanceUpdateCount = web3TokenBalanceUpdateCount + 1;
+        /*let tempWeb3TokenBalanceUpdateCount = web3TokenBalanceUpdateCount + 1;
         if (web3TokenBalanceUpdateCount >= 30 && !transactionLockRef.current && userInfo && wallets){
             tempWeb3TokenBalanceUpdateCount = 0;
-            updateAllTokenBalance();
+            //updateAllTokenBalance();
         }
-        setWeb3TokenBalanceUpdateCount(tempWeb3TokenBalanceUpdateCount);
+        setWeb3TokenBalanceUpdateCount(tempWeb3TokenBalanceUpdateCount);*/
 
         let tempUserInfoUpdateCount = userInfoUpdateCount + 1;
-        if (userInfoUpdateCount >= 10 && token){
+        if (userInfoUpdateCount >= 20 && token){
             tempUserInfoUpdateCount = 0;
             getInfoFn();
         }
@@ -519,6 +548,39 @@ const Info = ({
             setUpdateCount(updateCount + 1);
         }, 1000);
     }, [updateCount])
+    
+    const updateLoginNFT = (mode = 0) => {
+        setLoadLoginNFT(true);
+        getLoginNFT(wallets, movementChainTokenInfo?.chainId).then(res => {
+            setLoginNFT(res);
+            setLoadLoginNFT(false);
+            if (mode === 1){
+                /*if (Number(res) > 0){
+                    setOpenLoginNft(true);
+                }
+                else{
+                    setShowMintLoginNFT(true);
+                    transactionLockRef.current = true;
+                }*/
+                setOpenLoginNft(true);
+            }
+        }).catch(e => {
+            console.log("[getLoginNFT error]", e);
+            setLoadLoginNFT(false);
+        })
+    }
+
+    useEffect(() => {
+        if (wallets?.length > 0){
+            if (!loginNFT){
+                updateLoginNFT();
+            }
+            if (!firstUpdateBalance){
+                updateAllTokenBalance();
+                setFirstUpdateBalance(true);
+            }
+        }
+    }, [wallets])
 
     useEffect(() => {
         if (userInfo){
@@ -608,7 +670,7 @@ const Info = ({
                                                                 chainInfo,
                                                             } = item || {};
                                                             if (ID === selectedChainTokenId){
-                                                                return <></>;
+                                                                return;
                                                             }
                                                             else{
                                                                 return (
@@ -646,8 +708,21 @@ const Info = ({
                                                 <div className={`w100p flex_center_start`}>
                                                     <CustomIcon imgName={`${currentChainTokenInfo?.icon}`} className="mr10" width={30} height={30}></CustomIcon>
                                                     <div className='flex_center_center flex_col'>
-                                                        <div className='fs14 fb w100p fontCommon'>
+                                                        <div className='fs14 fb w100p fontCommon flex_center_start'>
                                                             {`${getCurrentCoinValue()} ${currentChainTokenInfo?.displayCoinName}`}
+                                                            <CustomIcon imgName="UI_Picture_Icon_Refresh" rotating={ftUpdateIconRotate} className="ml6 mb2" width={16} height={16} onClick={() => {
+                                                                if (!ftUpdateLock){
+                                                                    setFtUpdateLock(true);
+                                                                    setFtUpdateIconRotate(true);
+                                                                    updateTokenBalance(currentChainTokenInfo);
+                                                                    setTimeout(() => {
+                                                                        setFtUpdateIconRotate(false);
+                                                                    }, 500);
+                                                                    setTimeout(() => {
+                                                                        setFtUpdateLock(false);
+                                                                    }, 2000);
+                                                                }
+                                                            }}/>
                                                         </div>
                                                         <div className='fs12 color-999 w100p fontCommon'>
                                                             {`$ ${getCurrentUsdValue()}`}
@@ -678,6 +753,50 @@ const Info = ({
                                 </div>
                                 <div className='mid w100p' style={{maxHeight: `${window.innerHeight - 417}px`}}>
                                     {
+                                        openLoginNft ?
+                                            <div className={`flex_center_start_col openFoldLine`} style={{marginTop: '12px'}}>
+                                                <div className={`flex_center_between w100p`} onClick={() => {
+                                                    setOpenLoginNft(false);
+                                                }}>
+                                                    <div className='fs16 fontCommon'>
+                                                        {`UpID NFT`}
+                                                    </div>
+                                                    <CustomIcon imgName="UI_Picture_Icon_Arrows_Up" className="" width={10} height={10}></CustomIcon>
+                                                </div>
+                                                <img src={`${loginNftWebpUrl_low}`} className='' width={160} height={160}>
+                                                </img>
+                                                <div className='flex_center_center'>
+                                                    <div className='fs12 fb fontCommon'>
+                                                        {`${Number(loginNFT) > 0 ? `NFT ID#${loginNFT}`:`Wait for minting…`}`}
+                                                    </div>
+                                                    {
+                                                        /*!list[0]?.minted && 
+                                                        <span className='retryBtn2 pointer fontCommon' onClick={() => {
+                                                            setShowMintLoginNFT(true);
+                                                        }}>Retry</span>*/
+                                                    }
+                                                </div>
+                                            </div> :
+                                            <div className={`flex_center_start block blockItem`} onClick={() => {
+                                                if (Number(loginNFT) > 0){
+                                                    setOpenLoginNft(true);
+                                                }
+                                                else{
+                                                    updateLoginNFT(1);
+                                                }
+                                                //setShowMintLoginNFT(true);
+                                                //transactionLockRef.current = true;
+                                            }}>
+                                                <div className='fs16 pointer fontCommon flex_center_start'>
+                                                    {Number(loginNFT) > 0 ? `UpID NFT` : `Mint UpID NFT`}
+                                                    {
+                                                        loadLoginNFT &&
+                                                        <CustomIcon imgName="UI_Picture_LoadingPoint" imgType=".webp" className="" width={40} height={40}/>
+                                                    }
+                                                </div>
+                                            </div>
+                                    }
+                                    {
                                         list?.length > 0 ?
                                             openAccountNft ?
                                                 <div className={`flex_center_start_col openFoldLine`} style={{marginTop: '12px'}}>
@@ -706,20 +825,20 @@ const Info = ({
                                                     <div className='yellowTag'></div>
                                                     <div className='fs16 pointer fontCommon'>{`Pre-Order NFT`}</div>
                                                 </div> :
-                                            <div className={`flex_center_start block`} onClick={() => {
+                                            <div className={`flex_center_start block blockItem`} onClick={() => {
                                                 setShowModal(true);
                                             }}>
                                                 <div className='yellowTag'></div>
                                                 <div className='fs16 pointer fontCommon'>{`Activate your account`}</div>
                                             </div>
                                     }
-                                    <div className='flex_center_start block' onClick={() => {
+                                    <div className='flex_center_start block blockItem' onClick={() => {
                                             setShowReferralPanel(true)
                                             getInvitecodeList()
                                         }}>
                                         <div className='fs16 mr5 pointer fontCommon' >{`Invite your friends`}</div>
                                     </div>
-                                    {<div className={`flex_center_start block ${distributor?.is?'border-top':''}`} onClick={() => {
+                                    {<div className={`flex_center_start block blockItem ${distributor?.is?'border-top':''}`} onClick={() => {
                                         if (distributor?.is){
                                             setShowDistribute(true);
                                         }
@@ -1006,6 +1125,11 @@ const Info = ({
                         className={`input mt10 mb10 fontCommon ${accNameError ? 'error' : ''}`}
                         placeholder='Enter your name'
                         onChange={handleInputChange}
+                        suffix={
+                            <CustomIcon imgName="UI_Picture_Icon_Rejected" className="op5" width={18} height={18} onClick={() =>{
+                                setAccName('')
+                            }}></CustomIcon>
+                        }
                     ></Input>
                     <div className={`fs12 w100p fontCommon all ${accNameError ? 'color-yellow' : 'color-999'}`}>{accNameError ? accName?.length < 4 ? 'Your username must be longer than 4 characters.' :
                         "That username has been taken. Please choose another." : envConfig?.host + `/` + invitePre + accName}</div>
@@ -1177,7 +1301,7 @@ const Info = ({
                     getInfoFn={getInfoFn}></ModalBecomeLeader>
             </Modal>
             <Modal
-                width='530px'
+                width={`${useVerticalMode?342:530}px`}
                 title={''}
                 className="confirmModalWrap modalnopadding"
                 centered={true}
@@ -1187,10 +1311,59 @@ const Info = ({
                 onCancel={() => setShowDistribute(false)}
             >
                 <ModalDistribute
+                    useVerticalMode={useVerticalMode}
                     closeFn={() => {
                         setShowDistribute(false);
                     }}
-                    distributor={distributor}></ModalDistribute>
+                    distributor={distributor}
+                    userInfo={userInfo}></ModalDistribute>
+            </Modal>
+            <Modal
+                width={`367px`}
+                title={''}
+                className="confirmModalWrap modalnopadding"
+                centered={true}
+                open={showMintLoginNFT}
+                destroyOnClose={true}
+                onOk={() => {
+                    setShowMintLoginNFT(false);
+                    transactionLockRef.current = false;
+                }}
+                onCancel={() => {
+                    setShowMintLoginNFT(false);
+                    transactionLockRef.current = false;
+                }}
+            >
+                <ModalMintLoginNFT
+                    useVerticalMode={useVerticalMode}
+                    closeFn={() => {
+                        setShowMintLoginNFT(false);
+                    }}
+                    userInfo={userInfo}
+                    getMoreFn={() => {
+                        setShowGetMoveFromFaucet(true);
+                    }}
+                    tokenBalanceRef={tokenBalanceRef}
+                    updateTokenBalance={updateTokenBalance}></ModalMintLoginNFT>
+            </Modal>
+            <Modal
+                width={`367px`}
+                title={''}
+                className="confirmModalWrap modalnopadding"
+                centered={true}
+                open={showGetMoveFromFaucet}
+                destroyOnClose={true}
+                onOk={() => setShowGetMoveFromFaucet(false)}
+                onCancel={() => setShowGetMoveFromFaucet(false)}
+            >
+                <ModalGetMoveFromFaucet
+                    useVerticalMode={useVerticalMode}
+                    closeFn={() => {
+                        setShowGetMoveFromFaucet(false);
+                    }}
+                    userInfo={userInfo}
+                    tokenBalanceRef={tokenBalanceRef}
+                    updateTokenBalance={updateTokenBalance}></ModalGetMoveFromFaucet>
             </Modal>
         </div>
 

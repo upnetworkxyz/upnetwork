@@ -26,6 +26,8 @@ const Index = (props) => {
         baseUrl = imgbaseUrl,
         children = <></>,
         forceRotate = false,
+        onMouseEnter = () => {},
+        onMouseLeave = () => {},
     } = props;
     const [hover, setHover] = useState(false);
     const [rotate, setRotate] = useState(false);
@@ -61,14 +63,26 @@ const Index = (props) => {
 
     return (
 
-        <span className={`icon-wrapper ${className}`} onClick={(e) => {
-            if (onClick) {
-                e.preventDefault();
-                e.stopPropagation();
-                onClick();
-                isHaveClick && spin()
-            }
-        }} style={{ width: width, height: height }}>
+        <span className={`icon-wrapper ${className}`} 
+            onClick={(e) => {
+                if (onClick) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onClick();
+                    isHaveClick && spin()
+                }
+            }}
+            onMouseEnter={(e) => {
+                if (onMouseEnter){
+                    onMouseEnter(e);
+                }
+            }}
+            onMouseLeave={(e) => {
+                if (onMouseLeave){
+                    onMouseLeave(e);
+                }
+            }}
+            style={{ width: width, height: height }}>
             <span
                 className={`customIcon ${rotating?'customIconRotate':''}`}
                 onMouseEnter={isHaveHover ? toggleHover : null}

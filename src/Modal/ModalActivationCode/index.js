@@ -17,6 +17,7 @@ import "./index.css"
 import moment from "moment";
 
 const ModalActivationCode = ({
+    useVerticalMode,
     closeFn = () => {},
 }) => {
     const [cdkeyList, setCdkeyList] = useState(null);
@@ -52,64 +53,67 @@ const ModalActivationCode = ({
             <div className="w100p fs20 fb tlc" style={{marginTop: '39px'}}>
                 {`Activation Codes Management`}
             </div>
-            <div className="w100p activationCodeLine" style={{marginTop: '16px'}}>
-                <div className="codeIdPart color-999">
-                    {`Code ID`}
-                </div>
-                <div className="codePart color-999">
-                    <div style={{marginLeft: '32px'}}>
-                        {`Code`}
+            <div className={`${useVerticalMode?'activationCodeListRoot_v':'flex_center_start_col'}`}>
+                <div className={`${useVerticalMode?`activationCodeLine_v`:`activationCodeLine`}`}>
+                    <div className="codeIdPart color-999">
+                        {`Code ID`}
+                    </div>
+                    <div className="codePart color-999">
+                        <div style={{marginLeft: '32px'}}>
+                            {`Code`}
+                        </div>
+                    </div>
+                    <div className="statusPart color-999">
+                        {`Status`}
+                    </div>
+                    <div className="datePart color-999">
+                        {`Date Created`}
                     </div>
                 </div>
-                <div className="statusPart color-999">
-                    {`Status`}
-                </div>
-                <div className="datePart color-999">
-                    {`Date Created`}
-                </div>
-            </div>
-            <div className="activationCodeList flex_center_start_col">
-                {
-                    cdkeyList?.length > 0 &&             
-                    cdkeyList.map((item, index) => {
-                        const {
-                            id,
-                            code,
-                            valid,
-                            createTime
-                        } = item || {};
-                        return (
-                            <div key={index} className="activationCodeListLine flex_center_start">
-                                <div className="codeIdPart fs12 color-999">
-                                    {`${id}`}
-                                </div>
-                                <div className="codePart">
-                                    <CustomIcon imgName={`UI_Picture_Icon_Copy_01`} className="op4" width={20} height={20} onClick={() => {
-                                        copyFn(code);
-                                    }}></CustomIcon>
-                                    <div className="fs12 color-999" style={{marginLeft: '12px'}}>
-                                        {code}
+                <div className={`${useVerticalMode?`activationCodeList_v`:`activationCodeList`} flex_center_start_col`}>
+                    {
+                        cdkeyList?.length > 0 &&             
+                        cdkeyList.map((item, index) => {
+                            const {
+                                id,
+                                code,
+                                valid,
+                                createTime
+                            } = item || {};
+                            return (
+                                <div key={index} className="activationCodeListLine flex_center_start">
+                                    <div className="codeIdPart fs12 color-999">
+                                        {`${id}`}
+                                    </div>
+                                    <div className="codePart">
+                                        <CustomIcon imgName={`UI_Picture_Icon_Copy_01`} className="op4" width={20} height={20} onClick={() => {
+                                            copyFn(code);
+                                        }}></CustomIcon>
+                                        <div className="fs12 color-999" style={{marginLeft: '12px'}}>
+                                            {code}
+                                        </div>
+                                    </div>
+                                    <div className="statusPart">
+                                        {
+                                            !valid ?
+                                                <div className="fs12">
+                                                    {`Actived`}
+                                                </div> :
+                                                <div className="activationCodeActiveState">
+                                                    {`Inactive`}
+                                                </div>
+                                        }
+                                    </div>
+                                    <div className="datePart fs12 color-999 flex_center_center">
+                                        {`${formatUtcTime(createTime)} UTC`}
                                     </div>
                                 </div>
-                                <div className="statusPart">
-                                    {
-                                        !valid ?
-                                            <div className="fs12">
-                                                {`Actived`}
-                                            </div> :
-                                            <div className="activationCodeActiveState">
-                                                {`Inactive`}
-                                            </div>
-                                    }
-                                </div>
-                                <div className="datePart fs12 color-999 flex_center_center">
-                                    {`${formatUtcTime(createTime*1000)} UTC`}
-                                </div>
-                            </div>
-                        )
-                    })
-                }
+                            )
+                        })
+                    }
+                </div>
             </div>
+            <div className="color-999 mt15">Activation code will appear within 5 minutes after deduction.</div>
         </div>
     )
 }

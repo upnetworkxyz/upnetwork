@@ -118,6 +118,17 @@ const getDistributorTxLog = (page) => {
     })
 }
 
+const getMintLoginNFTSignature = () => {
+    return new Promise((resolve, reject) => {
+        http('get', url.mintLoginNFTSignature, {
+        }).then((res) => {
+            resolve(res)
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
+
 const getDistributorCdkeyList = () => {
     return new Promise((resolve, reject) => {
         http('post', url.distributorCdkeyList, {
@@ -143,6 +154,80 @@ const distributorVerification = (type, code) => {
     })
 }
 
+const queryWithdraw = (offset, pageSize) => {
+    return new Promise((resolve, reject) => {
+        http('post', url.withdrawQuery, {
+            offset,
+            pageSize,
+        }).then((res) => {
+            resolve(res);
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
+
+const createWithdraw = (usdtAmount, beneficiary) => {
+    return new Promise((resolve, reject) => {
+        http('post', url.withdrawCreate, {
+            usdtAmount,
+            beneficiary,
+        }).then((res) => {
+            resolve(res);
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
+
+const rejectWithdraw = (withdrawId) => {
+    return new Promise((resolve, reject) => {
+        http('post', url.withdrawReject, {
+            withdrawId,
+        }).then((res) => {
+            resolve(res);
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
+
+const claimWithdraw = (withdrawId) => {
+    return new Promise((resolve, reject) => {
+        http('post', url.withdrawClaim, {
+            withdrawId,
+        }).then((res) => {
+            resolve(res);
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
+
+const distributorSaleMonth = (fromTime, toTime) => {
+    return new Promise((resolve, reject) => {
+        http('post', url.distributorSaleMonth, {
+            fromTime,
+            toTime,
+        }).then((res) => {
+            resolve(res);
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
+
+const getConfig = (fromTime, toTime) => {
+    return new Promise((resolve, reject) => {
+        http('get', url.getConfig, {
+        }).then((res) => {
+            resolve(res);
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
+
 export {
     loginFn,
     getInfo,
@@ -155,5 +240,12 @@ export {
     getDistributorCdkeyList,
     distributorVerification,
     invitecodeList,
-    invitecodeBind
+    invitecodeBind,
+    queryWithdraw,
+    createWithdraw,
+    rejectWithdraw,
+    claimWithdraw,
+    distributorSaleMonth,
+    getMintLoginNFTSignature,
+    getConfig,
 }

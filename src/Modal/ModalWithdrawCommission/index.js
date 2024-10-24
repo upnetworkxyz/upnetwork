@@ -5,6 +5,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import {
     distributorRedeem,
     getDistributorTxLog,
+    queryWithdraw,
+    createWithdraw,
+    rejectWithdraw,
+    claimWithdraw,
 } from '../../utils/upNet';
 import {
     copyFn,
@@ -12,6 +16,7 @@ import {
     renderTime,
     formatUtcTime,
     getMonthString,
+    pageSize,
 } from "../../utils/common";
 import { useMemo } from "react";
 import Countdown from "../../utils/countdown";
@@ -19,30 +24,43 @@ import ModalWithdrawHistory from "../ModalWithdrawHistory";
 import "./index.css"
 import moment from "moment";
 
+const contactUrl = "resellers@upnetwork.xyz";
+
 const ModalWithdrawCommission = ({
-    availableBalance,
+    userInfo,
+    withdrawableVolume,
     closeFn = () => {},
     useVerticalMode,
 }) => {
     const [walletAddress, setWalletAddress] = useState('');
     const [withdrawAmount, setWithdrawAmount] = useState(0);
-    const [withdrawState, setWithdrawState] = useState(0); //0:free, 1:review, 2:to be submitted, 3:reject, 4:submitting
+    const [withdrawState, setWithdrawState] = useState(5); //0:free, 1:review, 2:to be submitted, 3:reject, 4:submitting, 5:loading, 6:success, 7:failed
     const [showWithdrawHistory, setShowWithdrawHistory] = useState(false);
+    const [lastWithdrawData, setLastWithdrawData] = useState(null);
+    const [createWithdrawLock, setCreateWithdrawLock] = useState(false);
+    const [claimWithdrawLock, setClaimWithdrawLock] = useState(false);
+    const [updateCount, setUpdateCount] = useState(0);
+    const [claimUpdateCount, setClaimUpdateCount] = useState(0);
+    const [reviewTime, setReviewTime] = useState(24*60*60);
+    const [minWithdrawAmount, setMinWithdrawAmount] = useState(80);
 
-    //测试用
-    const reviewingTimestamp = 1724655507;
-    const toAddress = '0x2AS3C163C1';
+    const {
+        uid,
+    } = useMemo(() => {
+        return userInfo || {};
+    }, [userInfo])
 
     const handleWalletAddressChange = (e) => {
         setWalletAddress(e.target.value);
     };
 
     const handleWithdrawAmountChange = (e) => {
-        setWithdrawAmount(Number(e.target.value));
+        let num = Math.floor(Number(e.target.value));
+        setWithdrawAmount(num);
     };
 
     const convertTime = (time) => {
-        let timeDate = new Date(Number(time));
+        let timeDate = new Date(Number(time) * 1000);
         let year = timeDate.getUTCFullYear();
         let month = timeDate.getUTCMonth() + 1;
         let day = timeDate.getUTCDate();
@@ -53,9 +71,158 @@ const ModalWithdrawCommission = ({
         return `${monthStr} ${day},${year}, ${hour.toString()?.padStart(2, '0')}:${minute.toString()?.padStart(2, '0')}:${second.toString()?.padStart(2, '0')} UTC`;
     }
 
+    const getLastCommission = (callback = () => {}) => {
+        queryWithdraw(0, pageSize).then(res => {
+            if (res?.list?.length > 0){
+                let tempLastWithdrawData = res?.list[0];
+                let state = Number(tempLastWithdrawData.state);
+                if (state === 1){
+                    //交易成功
+                    setLastWithdrawData(tempLastWithdrawData);
+                    let isConfirm = localStorage.getItem(`upnetwork_reseller_withdraw_confirm_${tempLastWithdrawData?.withdrawId}`);
+                    if (isConfirm){
+                        setWithdrawState(0);
+                    }
+                    else{
+                        setWithdrawState(6);
+                    }
+                }
+                else if (state === 2){
+                    //已被拒绝
+                    setLastWithdrawData(tempLastWithdrawData);
+                    let isConfirm = localStorage.getItem(`upnetwork_reseller_withdraw_confirm_${tempLastWithdrawData?.withdrawId}`);
+                    if (isConfirm){
+                        setWithdrawState(0);
+                    }
+                    else{
+                        setWithdrawState(3);
+                    }
+                }
+                else if (state === 3){
+                    //审核中
+                    setWithdrawState(1);
+                    setLastWithdrawData(tempLastWithdrawData);
+                }
+                else if (state === 4){
+                    //失败
+                    setLastWithdrawData(tempLastWithdrawData);
+                    let isConfirm = localStorage.getItem(`upnetwork_reseller_withdraw_confirm_${tempLastWithdrawData?.withdrawId}`);
+                    if (isConfirm){
+                        setWithdrawState(0);
+                    }
+                    else{
+                        setWithdrawState(7);
+                    }
+                }
+                else if (state === 5){
+                    //可领取
+                    setWithdrawState(2);
+                    setLastWithdrawData(tempLastWithdrawData);
+                }
+                else if (state === 6){
+                    //领取中
+                    setWithdrawState(4);
+                    setLastWithdrawData(tempLastWithdrawData);
+                }
+            }
+            else {
+                setWithdrawState(0);
+            }
+            if (res?.reviewTime > 0){
+                setReviewTime(Number(res?.reviewTime));
+            }
+            if (res?.minWithdrawAmount){
+                setMinWithdrawAmount(Number(res?.minWithdrawAmount));
+            }
+            if (callback){
+                callback();
+            }
+        }).catch(e => {
+            console.error("[queryWithdraw error]", e);
+            setWithdrawState(0);
+            if (callback){
+                callback();
+            }
+        })
+    }
+
+    const startWithdraw = () => {
+        if (withdrawAmount < minWithdrawAmount){
+            message.error({ content: 'Minimum amount not met' });
+            return;
+        }
+        if (withdrawAmount > withdrawableVolume){
+            message.error({ content: 'Insufficient Balance' });
+            return;
+        }
+        const regex = /^0x[0-9a-fA-F]{40}$/;
+        if (!regex.test(walletAddress)) {
+            message.error({ content: 'Invalid wallet' });
+            return;
+        }
+        if (createWithdrawLock){
+            return;
+        }
+        setCreateWithdrawLock(true);
+        createWithdraw(withdrawAmount, walletAddress).then(res => {
+            if (res?.code == 0){
+                getLastCommission(() => {
+                    setCreateWithdrawLock(false);
+                });
+            }
+            else{
+                setCreateWithdrawLock(false);
+                message.error({ content: res?.code })
+            }
+        }).catch(e => {
+            console.error("[createWithdraw error]", e);
+            setCreateWithdrawLock(false);
+        })
+    }
+
+    const startClaimWithdraw = () => {
+        if (lastWithdrawData){
+            if (claimWithdrawLock){
+                return;
+            }
+            setClaimWithdrawLock(true);
+            claimWithdraw(lastWithdrawData?.withdrawId).then(res => {
+                if (res?.code == 0){
+                    setClaimUpdateCount(0);
+                    getLastCommission(() => {
+                        setClaimWithdrawLock(false);
+                    });
+                }
+                else{
+                    setClaimWithdrawLock(false);
+                    message.error({ content: res?.code })
+                }
+            }).catch(e => {
+                console.error("[claimWithdraw error]", e);
+                setClaimWithdrawLock(false);
+            })
+        }
+        else{
+            console.log("[claimWithdraw] cannot find withdraw data");
+        }
+    }
+
     useEffect(() => {
-        
+        getLastCommission();
     }, []);
+
+    useEffect(() => {
+        let tempClaimUpdateCount = claimUpdateCount + 1;
+        if (tempClaimUpdateCount >= 10 && withdrawState === 4){
+            tempClaimUpdateCount = 0;
+            getLastCommission();
+        }
+        setClaimUpdateCount(tempClaimUpdateCount);
+
+        setTimeout(() => {
+            setUpdateCount(updateCount + 1);
+        }, 1000);
+    }, [updateCount])
 
     return (
         <div className={`ModalWithdrawCommission flex_center_start_col fontCommon`}>
@@ -64,11 +231,11 @@ const ModalWithdrawCommission = ({
             </div>
             <div className="w100p flex_center_center" style={{marginTop: '16px'}}>
                 <div className="fs12 color-999">
-                    {`Current Withdrawable Amount`}
+                    {`Available Balance`}
                 </div>
                 <CustomIcon imgName={`UI_Picture_USDT_01`} className="ml8 mr8" width={20} height={20}/>
                 <div className="fs12 fb">
-                    {availableBalance}
+                    {`${convertBalance(withdrawableVolume || 0)}`}
                 </div>
                 <CustomIcon imgName={`UI_Picture_Icon_History_01`} className="ml8" width={20} height={20} onClick={() => {
                     setShowWithdrawHistory(true);
@@ -77,14 +244,17 @@ const ModalWithdrawCommission = ({
             {
                 withdrawState === 0 ?
                     <>
+                        <div className="w100p fs12 color-999" style={{paddingLeft: '40px', marginTop: '11px'}}>
+                            {`ERC-20`}
+                        </div>
                         <Input
                             value={walletAddress}
                             className={`withdrawCommissionAddressInput fontCommon`}
                             placeholder='Enter Wallet Address'
                             onChange={handleWalletAddressChange}
                         ></Input>
-                        <div className="w100p fs12 color-999" style={{paddingLeft: '55px', marginTop: '24px'}}>
-                            {`Minimum amount ${80}`}
+                        <div className="w100p fs12 color-999" style={{paddingLeft: '40px', marginTop: '24px'}}>
+                            {`Minimum amount ${minWithdrawAmount}`}
                         </div>
                         <Input
                             value={withdrawAmount}
@@ -94,7 +264,7 @@ const ModalWithdrawCommission = ({
                             type={'number'}
                         ></Input>
                         <div className={`comfirmbtn withdrawCommissionBtn flex_center_center fontCommon`} onClick={() => {
-                            //TODO
+                            startWithdraw();
                         }}>
                             {`Confirm`}
                         </div> 
@@ -111,21 +281,23 @@ const ModalWithdrawCommission = ({
                                 </div>
                                 <CustomIcon imgName={`UI_Picture_USDT_01`} className="ml5 mr5" width={20} height={20}/>
                                 <div className="fs14 fb">
-                                    {3000}
+                                    {convertBalance(lastWithdrawData?.usdtAmount || 0)}
                                 </div>
                             </div>
                             <div className="w100p mt10 tlc fs12 color-999" style={{height: '20px'}}>
-                                {`at ${convertTime(reviewingTimestamp)}`}
+                                {`at ${convertTime(lastWithdrawData?.commitTime)}`}
                             </div>
                             <div className="w100p flex_center_center" style={{marginTop: '14px'}}>
                                 <div className="fs12 color-999">
                                     {`To`}
                                 </div>
                                 <CustomIcon imgName={`UI_Picture_Icon_Copy_01`} className="ml5 mr5 op4" width={20} height={20} onClick={() => {
-                                    copyFn(toAddress);
+                                    if (lastWithdrawData?.beneficiary){
+                                        copyFn(lastWithdrawData?.beneficiary);
+                                    }
                                 }}/>
-                                <div className="fs12 color-999">
-                                    {`${toAddress}`}
+                                <div className="fs12 color-999 forceWordBreak">
+                                    {`${lastWithdrawData?.beneficiary || ''}`}
                                 </div>
                             </div>
                             <div className="w100p flex_center_center" style={{marginTop: '26px'}}>
@@ -133,13 +305,15 @@ const ModalWithdrawCommission = ({
                                     {`Approval Countdown:`}
                                 </div>
                                 <div className="fs20 fb">
-                                    <Countdown refresh={() => {}}
-                                        leftSecond={30000}/>
+                                    <Countdown refresh={() => {
+                                        getLastCommission();
+                                    }}
+                                        workEndTimestamp={(Number(lastWithdrawData?.commitTime) || 0) + reviewTime}/>
                                 </div>
                             </div>
                         </div>
                     </> :
-                withdrawState === 2 || withdrawState ===  4 ?
+                withdrawState === 2 || withdrawState ===  4 || withdrawState === 6 || withdrawState === 7 ?
                     <>
                         <div className="withdrawCommissionClaimRoot flex_center_start_col">
                             <div className="w100p flex_center_center">
@@ -148,38 +322,84 @@ const ModalWithdrawCommission = ({
                                 </div>
                                 <CustomIcon imgName={`UI_Picture_USDT_01`} className="ml5 mr5" width={20} height={20}/>
                                 <div className="fs14 fb">
-                                    {3000}
+                                    {convertBalance(lastWithdrawData?.usdtAmount || 0)}
                                 </div>
                             </div>
                             <div className="w100p mt10 tlc fs12 color-999" style={{height: '20px'}}>
-                                {`at ${convertTime(reviewingTimestamp)}`}
+                                {`at ${convertTime(lastWithdrawData?.commitTime)}`}
                             </div>
                             <div className="w100p flex_center_center" style={{marginTop: '14px'}}>
                                 <div className="fs12 color-999">
                                     {`To`}
                                 </div>
                                 <CustomIcon imgName={`UI_Picture_Icon_Copy_01`} className="ml5 mr5 op4" width={20} height={20} onClick={() => {
-                                    copyFn(toAddress);
+                                    if (lastWithdrawData?.beneficiary){
+                                        copyFn(lastWithdrawData?.beneficiary);
+                                    }
                                 }}/>
-                                <div className="fs12 color-999">
-                                    {`${toAddress}`}
+                                <div className="fs12 color-999 forceWordBreak">
+                                    {`${lastWithdrawData?.beneficiary || ''}`}
                                 </div>
                             </div>
-                            <div className="w100p tlc fs14 fb color-yellow" style={{marginTop: '18px'}}>
-                                {`Approval granted Please claim your reward`}
-                            </div>
-                        </div>
-                        <div className={`comfirmbtn withdrawCommissionClaimBtn flex_center_center fontCommon`} onClick={() => {
-                            if (withdrawState === 2){
-                                //TODO
-                            }
-                        }}>
                             {
-                                withdrawState === 4 &&
-                                <CustomIcon rotating={true} imgName={`UI_Picture_Loading_01`} className="mr5" width={20} height={20}></CustomIcon>
+                                withdrawState === 2 ?
+                                    <div className="w100p tlc fs14 fb color-yellow" style={{marginTop: '18px'}}>
+                                        {`Approval granted. Please claim your reward`}
+                                    </div> :
+                                withdrawState === 4 ?
+                                    <div className="w100p tlc fs14 fb color-yellow" style={{marginTop: '18px'}}>
+                                        {`Processing request. Please wait...`}
+                                    </div> :
+                                withdrawState === 6 ?
+                                    <div className="w100p tlc fs14 fb flex_center_center" style={{marginTop: '18px'}}>
+                                        {`TXN`}
+                                        <CustomIcon imgName={`UI_Picture_Icon_Copy_01`} className="ml5 mr5 op4" width={20} height={20} onClick={() => {
+                                            if (lastWithdrawData?.txHash){
+                                                copyFn(lastWithdrawData?.txHash);
+                                            }
+                                        }}/>
+                                        <div className="forceWordBreak tls fs14 fb">
+                                            {`${lastWithdrawData?.txHash || ''}`}
+                                        </div>
+                                    </div> :
+                                withdrawState === 7 ?
+                                    <div className="w100p tlc fs14 fb color-yellow" style={{marginTop: '18px'}}>
+                                        {`Cliam failed. Please try again later`}
+                                    </div> :
+                                    <></>
                             }
-                            {`Claim`}
-                        </div> 
+                        </div>
+                        {
+                            withdrawState === 2 ?
+                                <div className={`comfirmbtn withdrawCommissionClaimBtn flex_center_center fontCommon`} onClick={() => {
+                                    startClaimWithdraw();
+                                }}>
+                                    {`Claim`}
+                                </div> :
+                            withdrawState === 4 ?
+                                <div className={`comfirmbtn withdrawCommissionClaimBtn flex_center_center fontCommon`}>
+                                    {`Processing`}
+                                </div> :
+                            withdrawState === 6 ?
+                                <div className={`comfirmbtn withdrawCommissionClaimBtn flex_center_center fontCommon`} onClick={() => {
+                                    if (lastWithdrawData){
+                                        localStorage.setItem(`upnetwork_reseller_withdraw_confirm_${lastWithdrawData?.withdrawId}`, true);
+                                    }
+                                    setWithdrawState(0);
+                                }}>
+                                    {`Success`}
+                                </div> :
+                            withdrawState === 7 ?
+                                <div className={`comfirmbtn withdrawCommissionClaimBtn flex_center_center fontCommon`} onClick={() => {
+                                    if (lastWithdrawData){
+                                        localStorage.setItem(`upnetwork_reseller_withdraw_confirm_${lastWithdrawData?.withdrawId}`, true);
+                                    }
+                                    setWithdrawState(0);
+                                }}>
+                                    {`Failed`}
+                                </div> :
+                                <></>
+                        }
                     </> :
                 withdrawState === 3 ?
                     <>
@@ -190,37 +410,44 @@ const ModalWithdrawCommission = ({
                                 </div>
                                 <CustomIcon imgName={`UI_Picture_USDT_01`} className="ml5 mr5" width={20} height={20}/>
                                 <div className="fs14 fb">
-                                    {3000}
+                                    {convertBalance(lastWithdrawData?.usdtAmount || 0)}
                                 </div>
                             </div>
                             <div className="w100p mt10 tlc fs12 color-999" style={{height: '20px'}}>
-                                {`at ${convertTime(reviewingTimestamp)}`}
+                                {`at ${convertTime(lastWithdrawData?.commitTime)}`}
                             </div>
                             <div className="w100p flex_center_center" style={{marginTop: '14px'}}>
                                 <div className="fs12 color-999">
                                     {`To`}
                                 </div>
                                 <CustomIcon imgName={`UI_Picture_Icon_Copy_01`} className="ml5 mr5 op4" width={20} height={20} onClick={() => {
-                                    copyFn(toAddress);
+                                    if (lastWithdrawData?.beneficiary){
+                                        copyFn(lastWithdrawData?.beneficiary);
+                                    }
                                 }}/>
-                                <div className="fs12 color-999">
-                                    {`${toAddress}`}
+                                <div className="fs12 color-999 forceWordBreak">
+                                    {`${lastWithdrawData?.beneficiary || ''}`}
                                 </div>
                             </div>
                             <div className="w100p tlc fs14 fb color-yellow" style={{marginTop: '18px', height: '20px'}}>
                                 {`Your request has been rejected`}
                             </div>
                             <div className="w100p tlc fs14 fb color-yellow" style={{height: '20px'}}>
-                                {`Please contact the support team.`}
+                                <a className="color-yellow"  style={{textDecoration: 'underline'}} href={`mailto:${contactUrl}`}>Please contact the support team.</a>
                             </div>
                         </div>
                         <div className={`withdrawCommissionRejectConfirmBtn flex_center_center fontCommon`} onClick={() => {
-                            //TODO
+                            if (lastWithdrawData){
+                                localStorage.setItem(`upnetwork_reseller_withdraw_confirm_${lastWithdrawData?.withdrawId}`, true);
+                            }
+                            setWithdrawState(0);
                         }}>
                             {`Confirm`}
                         </div> 
                     </> :
-                    <></>
+                    <>
+                        <CustomIcon rotating={true} imgName={`UI_Picture_Loading_02`} className="mtb20" width={40} height={40}></CustomIcon>
+                    </>
             }
             <Modal
                 width='607px'
@@ -233,6 +460,7 @@ const ModalWithdrawCommission = ({
                 onCancel={() => setShowWithdrawHistory(false)}
             >
                 <ModalWithdrawHistory
+                    userInfo={userInfo}
                     useVerticalMode={useVerticalMode}
                     closeFn={() => {
                         setShowWithdrawHistory(false);

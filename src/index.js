@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { PrivyProvider } from '@privy-io/react-auth';
 import {GetSupportedChainList} from "./utils/common.js";
 import { envConfig } from './utils/env';
+import { movementTestnetChain } from './utils/common';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
@@ -22,6 +23,7 @@ root.render(
             // "logo": 'https://www.turnup.so/logo512.png'
           },
           captchaEnabled: false,
+          defaultChain: movementTestnetChain,
           supportedChains: GetSupportedChainList(),
           embeddedWallets: {
             createOnLogin: "all-users",
